@@ -27,11 +27,16 @@ jobs:
           git checkout main  # Ensure you're on the correct branch
           git merge source/main --allow-unrelated-histories || echo "No changes to merge"
 
-      - name: Check for changes
+      - name: Update destination repo
+        run: |
+          git fetch origin main  # Fetch latest changes from origin
+          git merge origin/main --allow-unrelated-histories || echo "No changes to merge"
+          
+      - name: Push changes to destination repo
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "Changes detected, preparing to push."
-            git push origin main --force
+            git push origin main
           else
             echo "No changes to push."
           fi
