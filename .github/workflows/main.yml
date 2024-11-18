@@ -17,7 +17,7 @@ jobs:
         run: |
           git remote add source https://github.com/nestjs/docs.nestjs.com.git
           git fetch source
-          git merge source/main --allow-unrelated-histories
+          git reset --hard source/main
           
       - name: Push changes to destination repo
         run: |
