@@ -12,16 +12,26 @@ jobs:
     steps:
       - name: Checkout destination repo
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false  # Prevents using the default token for pushing
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
 
       - name: Pull changes from source repo
         run: |
           git remote add source https://github.com/nestjs/docs.nestjs.com.git
           git fetch source
           git checkout main  # Ensure you're on the correct branch
-          git merge source/main || true  # Merge changes; ignore if no changes
+          git merge source/main --allow-unrelated-histories || echo "No changes to merge"
 
-      - name: Push changes to destination repo
+      - name: Check for changes
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git push origin main
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected, preparing to push."
+            git push origin main
+          else
+            echo "No changes to push."
+          fi
