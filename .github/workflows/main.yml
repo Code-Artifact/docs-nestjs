@@ -31,7 +31,7 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             echo "Changes detected, preparing to push."
-            git push origin main
+            git push origin main --force
           else
             echo "No changes to push."
           fi
