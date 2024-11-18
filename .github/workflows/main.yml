@@ -1,0 +1,26 @@
+name: Pull from Source Repo
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  pull:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout destination repo
+        uses: actions/checkout@v2
+
+      - name: Pull changes from source repo
+        run: |
+          git remote add source https://github.com/nestjs/docs.nestjs.com.git
+          git fetch source
+          git merge source/main --allow-unrelated-histories
+          
+      - name: Push changes to destination repo
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git push origin main
